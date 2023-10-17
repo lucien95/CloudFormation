@@ -1,0 +1,18 @@
+#This is just my cloudformation anatomy file that is the structure to always follow for my cloudformation templates.
+# for sections on the template I dont use i will use an open and closing curly brackets in the section as below.
+#It makes it not readable to cloudformation.
+
+
+AWSTemplateFormatVersion: 2010-09-09
+Description: {}
+Metadata: {}
+
+Parameters: {}
+
+Mappings: {}
+
+Conditions: {}
+
+Resources: {}
+
+Outputs: {}
