@@ -9,21 +9,30 @@ Mappings: {}
 Conditions: {}
 
 Resources:
-  myEC2Instance:
+ Webserver :
     Type: AWS::EC2::Instance
     Properties:
-      KeyName: 
-      DisableApiTermination: 
-      ImageId: 
-      InstanceType: 
-      Monitoring: true|false
+      KeyName: mykeypair
+      ImageId: ami-0a0d9cf81c479446a
+      InstanceType: t2.micro
+      Monitoring: true
       SecurityGroupIds:
-        - sg-id
+        - sg-0831f14d5c8645b8a
       UserData: !Base64 |
         #!/bin/bash -ex
-        # put your script here
+        sudo su
+        apt update -y
+        apt -y install apache2
+        systemctl start apache2
+        systemctl enable apache2
+        apt install wget -y
+        wget https://github.com/awanmbandi/google-cloud-projects/raw/jjtech-flix-app/jjtech-streaming-application-v1.zip 
+        apt install unzip -y
+        unzip jjtech-streaming-application-v1.zip
+        rm -f /var/www/html/index.html
+        cp -rf jjtech-streaming-application-v1/* /var/www/html/
       Tags:
-        - Key: key
-          Value: value
+        - Key: Name
+          Value: Webserver
 
 Outputs: {}
