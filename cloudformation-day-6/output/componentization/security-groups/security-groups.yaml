@@ -1,0 +1,94 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: This template provisions the webservers and database security groups.
+Metadata: {}
+
+Parameters: 
+# Webservers parameters.
+  DevWebserverSGGroupNamePara:
+    Description: Please provide your Dev server group name.
+    Type: String
+    Default: DevWebserverSG
+
+  DevWebserverSGGroupDescriptionPara:
+    Description: Please provide your Dev server group description.
+    Type: String
+    Default: Enabling SSH and HTTP  
+
+# Database server parameters.
+
+  DevDBserverSGGroupNamePara:
+    Description: Please provide your Dev DBserver group name.
+    Type: String
+    Default: DevDBserverSG
+
+  DevDBserverSGGroupDescriptionPara:
+    Description: Please provide your Dev DB server group description.
+    Type: String
+    Default: Enabling Mysql     
+
+Mappings: {}
+
+Conditions: {}
+
+
+Resources: 
+# Dev webserver security group.
+  DevWebserverSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: !Ref DevWebserverSGGroupNamePara
+      GroupDescription: !Ref DevWebserverSGGroupDescriptionPara
+      VpcId: !ImportValue DevVPCID
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: DevWebserverSG
+
+  # Database security group. 
+
+  DevDBserverSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: !Ref DevDBserverSGGroupNamePara
+      GroupDescription: !Ref DevDBserverSGGroupDescriptionPara
+      VpcId: !ImportValue DevWebserverSubnetID
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 3306
+          ToPort: 3306
+          CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+        - IpProtocol: tcp
+          FromPort: 3306
+          ToPort: 3306
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: DevDBserverSG        
+
+Outputs: 
+
+  DevWebserverSGIDExportOutPut:
+    Description: Exporting the Dev webserver SG ID.
+    Value: !Ref DevWebserverSG
+    Export: 
+      Name:  DevWebserverSGID
+
+  
